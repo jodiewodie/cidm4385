@@ -2,6 +2,7 @@
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.17/angular.min.js"></script>
         <script lang="javascript">
+        /*global angular*/
             var myModule = angular.module('assignment1', []);
             
             myModule.controller('TaxController',
@@ -11,14 +12,33 @@
                     myModule.controller('TaxController');
                     var tc = this;
                     
-                    tc.cost = 0.0;
-                    tc.add_tax = true;
-                    tc.total_bill = true;
+                    tc.totalbill = 0.0;
+                    tc.tax = true;
+                    tc.tip = true;
                     
+                    //determines the total bill and the amount that the tax and the tip is based on the total
                     function update(){
-                        tc.tax = tc.add_tax ? tc.cost * tc.tax_option : 0.0;
+                        tc.taxing = tc.tax ? tc.totalbill * tc.taxing: 0.0; 
+                        tc.tipping = tc.tip ? tc.totalbill * tc.tipping: 0.0;
+                        tc.totalbill = parseFloat(tc.totalbill) + tc.tipping + tc.taxing;
                     }
                     
+                    //watches if anything changes and runs the update function
+                    $scope.$watch('tc.totalbill', update);
+                    $scope.$watch('tc.taxing', update);
+                    $scope.$watch('tc.tipping', update);
+                    
+                    //shows tipping options
+                    tc.tipping_options = [
+                        {amount:10.0, name: "10%"},
+                        {amount:15.0, name: "15%"},
+                        {amount:20.0, name: "20"},
+                        ];
+                        
+                    tc.tipping = tc.tipping_options[0];
+                    
+                    
+                    //shows the taxes based on which state they are in
                     tc.taxing_options = [
                         {amount:4.0, name: "Alabama"},
                         {amount:0.0, name: "Alaska"},
@@ -28,56 +48,71 @@
                         {amount:2.9, name: "Colorado"},
                         {amount:6.35, name: "Connecticut"},
                         {amount:0.0, name: "Delaware"},
-                        {amount:4.0, name: "District of Columbia"},
-                        {amount:4.0, name: "Florida"},
+                        {amount:5.75, name: "District of Columbia"},
+                        {amount:6.0, name: "Florida"},
                         {amount:4.0, name: "Georgia"},
                         {amount:4.0, name: "Hawaii"},
-                        {amount:4.0, name: "Idaho"},
-                        {amount:4.0, name: "Illinois"},
-                        {amount:4.0, name: "Indiana"},
-                        {amount:4.0, name: "Iowa"},
-                        {amount:4.0, name: "Kansas"},
-                        {amount:4.0, name: "Kentucky"},
+                        {amount:6.0, name: "Idaho"},
+                        {amount:6.25, name: "Illinois"},
+                        {amount:7.0, name: "Indiana"},
+                        {amount:6.0, name: "Iowa"},
+                        {amount:6.5, name: "Kansas"},
+                        {amount:6.0, name: "Kentucky"},
                         {amount:4.0, name: "Louisiana"},
-                        {amount:4.0, name: "Maine"},
-                        {amount:4.0, name: "Maryland"},
-                        {amount:4.0, name: "Massachusetts"},
-                        {amount:4.0, name: "Michigan"},
-                        {amount:4.0, name: "Minnesota"},
-                        {amount:4.0, name: "Mississippi"},
-                        {amount:4.0, name: "Missouri"},
-                        {amount:4.0, name: "Montana"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        {amount:4.0, name: "Alabama"},
-                        
+                        {amount:5.5, name: "Maine"},
+                        {amount:6.0, name: "Maryland"},
+                        {amount:6.25, name: "Massachusetts"},
+                        {amount:6.0, name: "Michigan"},
+                        {amount:6.875, name: "Minnesota"},
+                        {amount:7.0, name: "Mississippi"},
+                        {amount:4.225, name: "Missouri"},
+                        {amount:0.0, name: "Montana"},
+                        {amount:5.5, name: "Nebraska"},
+                        {amount:6.85, name: "Nevada"},
+                        {amount:0.0, name: "New Hampshire"},
+                        {amount:7.0, name: "New Jersey"},
+                        {amount:5.125, name: "New Mexico"},
+                        {amount:4.0, name: "New York"},
+                        {amount:4.75, name: "North Carolina"},
+                        {amount:5.0, name: "North Dakota"},
+                        {amount:5.75, name: "Ohio"},
+                        {amount:4.5, name: "Oklahoma"},
+                        {amount:0.0, name: "Oregon"},
+                        {amount:6.0, name: "Pennsylvania"},
+                        {amount:7.0, name: "Rhode Island"},
+                        {amount:6.0, name: "South Carolina"},
+                        {amount:4.0, name: "South Dakota"},
+                        {amount:7.0, name: "Tennessee"},
+                        {amount:6.25, name: "Texas"},
+                        {amount:4.7, name: "Utah"},
+                        {amount:6.0, name: "Vermont"},
+                        {amount:4.3, name: "Virginia"},
+                        {amount:6.5, name: "Washington"},
+                        {amount:6.0, name: "West Virginia"},
+                        {amount:5.0, name: "Wisconsin"},
+                        {amount:4.0, name: "Wyoming"}
                         ];
                         
                         tc.taxing = tc.taxing_options[0];
                 }
-            )
+            );
         </script>
     </head>
     <body>
-        <div ng-controller = "TaxController as cc">
+        <div ng-controller = "TaxController as tc">
+            
             <p>
-                Total Bill: <input type="text" ng-model="tc.total_bill" placeholder="total"/><br/>
-                Tax: <select ng-model="tc.taxing" ng-options="s.name for s in tc.taxing_options"></select>
+                Total Bill: <input type="text" ng-model="tc.totalbill" placeholder=" total"/><br/>
+                
+                <!--Here I wasn't sure how to make the drop down lists work but this is where they would be-->
+                State Tax: <select ng-model="tc.taxing" ng-options="s.name for s in tc.taxing_options" placeholder="Taxes"></select><br/>
+                Tip: <select ng-model="tc.tipping" ng-options="s.name for s in tc.tipping_options" placeholder="Tips"></select>
+            </p>
+            <p>
+                <!--This section shows their totals-->
+                This is the Total Bill: {{tc.totalbill|currency}}<br/>
+                This is your Tax: {{tc.tax|currency}}<br/>
+                This is your Tip Amount: {{tc.tipping|currency}}
             </p>
         </div>
     </body>

@@ -18,21 +18,23 @@
                     
                     //determines the total bill and the amount that the tax and the tip is based on the total
                     function update(){
-                        tc.taxing = tc.tax ? tc.totalbill * tc.taxing: 0.0; 
-                        tc.tipping = tc.tip ? tc.totalbill * tc.tipping: 0.0;
-                        tc.totalbill = parseFloat(tc.totalbill) + tc.tipping + tc.taxing;
+                        tc.taxing = tc.tax ? tc.totalbill * tc.taxing_options: 0.0; 
+                        tc.tipping = tc.tip ? tc.totalbill * tc.tipping_options: 0.0;
+                        tc.totalbill = parseFloat(tc.totalbill) + parseFloat(tc.tipping) + parseFloat(tc.taxing);
                     }
                     
                     //watches if anything changes and runs the update function
                     $scope.$watch('tc.totalbill', update);
                     $scope.$watch('tc.taxing', update);
                     $scope.$watch('tc.tipping', update);
+                    $scope.$watch('tc.tipping_options', update);
+                    $scope.$watch('tc.taxing_options', update);
                     
                     //shows tipping options
                     tc.tipping_options = [
                         {amount:10.0, name: "10%"},
                         {amount:15.0, name: "15%"},
-                        {amount:20.0, name: "20"},
+                        {amount:20.0, name: "20%"},
                         ];
                         
                     tc.tipping = tc.tipping_options[0];
@@ -102,16 +104,17 @@
         <div ng-controller = "TaxController as tc">
             
             <p>
-                Total Bill: <input type="text" ng-model="tc.totalbill" placeholder=" total"/><br/>
+                <!--For some reason I can't input anything after making the drop down boxes show up-->
+                Total Bill: <input type="text" ng-model="tc.totalbill" placeholder="total"/><br/>
                 
                 <!--Here I wasn't sure how to make the drop down lists work but this is where they would be-->
-                State Tax: <select ng-model="tc.taxing" ng-options="s.name for s in tc.taxing_options" placeholder="Taxes"></select><br/>
-                Tip: <select ng-model="tc.tipping" ng-options="s.name for s in tc.tipping_options" placeholder="Tips"></select>
+                State Tax: <select ng-model="tc.taxing" ng-options="s.name for s in tc.taxing_options" ></select><br/>
+                Tip: <select ng-model="tc.tipping" ng-options="s.name for s in tc.tipping_options" ></select>
             </p>
             <p>
                 <!--This section shows their totals-->
                 This is the Total Bill: {{tc.totalbill|currency}}<br/>
-                This is your Tax: {{tc.tax|currency}}<br/>
+                This is your Tax: {{tc.taxing|currency}}<br/>
                 This is your Tip Amount: {{tc.tipping|currency}}
             </p>
         </div>
